@@ -19,7 +19,7 @@ bool copiarArchivo(const char origen[], const char destino[]){
           fclose(archivoOrigen);
         }
         if (archivoDestino != NULL){
-          fclose(archivoDestino)
+          fclose(archivoDestino);
             }
         return false;
     }
@@ -35,8 +35,60 @@ bool copiarArchivo(const char origen[], const char destino[]){
 
     return true;
 }
+//ALGORTIMO DE APAREO
+//TODO ESTE CHOCLO junta dos archivos ordenados por idMozo en un solo archivo final
+bool aparear(const char nomA[], const char nomB[], const char nomC[]) {
+    FILE* archivoA = fopen(nomA, "rb"); 
+    FILE* archivoB = fopen(nomB, "rb");
+    FILE* archivoC = fopen(nomC, "wb"); 
+
+    if (archivoA == NULL || archivoB == NULL || archivoC == NULL) {
+        if (archivoA != NULL){
+         fclose(archivoA);
+        }
+        if (archivoB != NULL){
+         fclose(archivoB);
+        }
+        if (archivoC != NULL){
+          fclose(archivoC); 
+        }
+        return false;
+    }
+
+   Comanda comandaA;
+   Comanda comandaB;
+   int leidoA = (int)fread(&comandaA, sizeof(Comanda), 1, archivoA);
+   int leidoB = (int)fread(&comandaB, sizeof(Comanda), 1, archivoB); 
+
+   //esta parte es para que mientras haya comandas en ambos archivos, se comparan y se guarda la menor por el idMozo
+   while (leidoA == 1 && leidoB == 1) {  
+    if (comandaA.idMozo <= comandaB.idMozo) {
+      fwrite(&comandaA, sizeof(Comanda), 1, archivoC);
+      leidoA = (int)fread(&comandaA, sizeof(Comanda), 1, archivoA);
+    } else {
+          fwrite(&comandaB, sizeof(Comanda), 1, archivoC);
+          leidoB = (int)fread(&comandaB, sizeof(Comanda), 1, archivoB);
+        }
+    }
+    while (leidoA == 1) {
+       fwrite(&comandaA, sizeof(Comanda), 1, archivoC);
+       leidoA = (int)fread(&comandaA, sizeof(Comanda), 1, archivoA);
+    }
+    while (leidoB == 1) {
+        fwrite(&comandaB, sizeof(Comanda), 1, archivoC);
+        leidoB = (int)fread(&comandaB, sizeof(Comanda), 1, archivoB);
+    }
+
+    fclose(archivoA);
+    fclose(archivoB);
+    fclose(archivoC);
+    return true;
+  }
 
 int main(){
-  // emm :3 still working on it jeje PERO quiero realizar un apareamiento porque las planillas ya van a estar ordenadas
-  // asi que fusionar los días manteniendo el orden por mozo va a ser mas facil. luego sigo
+  cout << "jeje" << endl; 
+  //la logica deberia ser -->
+  //--> ingresar la fecha de la primer comanda .dat DE ESA SEMANA y como los archivos ya van a estar ordenados previamente -->
+  //--> no deberia tener que ingresarlos manualmente para que se apareen. el lunes le pido al profesor que me guie.
+  return 0;
 }
