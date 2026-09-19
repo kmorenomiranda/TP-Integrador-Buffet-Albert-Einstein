@@ -86,9 +86,15 @@ bool aparear(const char nomA[], const char nomB[], const char nomC[]) {
   }
 
 int main(){
-  cout << "jeje" << endl; 
-  //la logica deberia ser -->
-  //--> ingresar la fecha de la primer comanda .dat DE ESA SEMANA y como los archivos ya van a estar ordenados previamente -->
-  //--> no deberia tener que ingresarlos manualmente para que se apareen. el lunes le pido al profesor que me guie.
-  return 0;
+    //  Primero los datos que identifican la semana a cerrar para armar el nombre del archivo semanal final (comandas_semana_sX-mm.dat).
+    int numeroSemana, mes, cantidadDias;
+    cout << "Numero de semana (X): ";
+    cin >> numeroSemana;
+    cout << "Mes (numero, ej. 6 para junio): ";
+    cin >> mes;
+    cout << "Cuantos dias tiene la semana a cerrar: ";
+    cin >> cantidadDias;
+
+    cout << "Inicio del main" ;
+    return 0;
 }
