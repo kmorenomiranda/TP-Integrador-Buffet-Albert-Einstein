@@ -95,6 +95,40 @@ int main(){
     cout << "Cuantos dias tiene la semana a cerrar: ";
     cin >> cantidadDias;
 
-    cout << "Inicio del main" ;
+    char acumulador[50] = "";
+    int temporal = 0;
+
+    for (int i = 0; i < cantidadDias; i++) {  // Recorremos cada dia de la semana pedido por Alberto.
+        char fecha[11];
+        cout << "Fecha del dia " << i + 1 << " (DD-MM-AAAA): ";
+        cin >> fecha;
+        char nombreDia[50];
+        snprintf(nombreDia, sizeof(nombreDia), "comandas_%s.dat", fecha);
+        
+        // Hay dias de la semana que pueden no tener planilla. Si no existe, se saltea sin cortar el programa
+        FILE* f = fopen(nombreDia, "rb");
+        if (f == NULL) {
+            cout << "Aviso: no existe " << nombreDia << ", se salta." << endl;
+            continue;
+        }
+        fclose(f);
+
+        if (acumulador[0] == '\0'){
+            strcpy(acumulador, "cierre_temp0.dat");
+            if (!copiarArchivo(nombreDia, acumulador){
+                cout << "Error al copiar " << nombreDia << "." << endl;
+                return 1;
+            }
+        } else {
+            char nuevo[50];
+            snprintf(nuevo, sizeof(nuevo), "cierre_temp%d.dat", ++temporal);
+            if (!aparear(acumulador, nombreDia, nuevo)) {
+                cout << "Error al aparear con " << nombreDia << "." << endl;
+                return 1;
+            }
+            remove(acumulador);
+            strcpy(acumulador, nuevo);
+        }
+    }
     return 0;
 }
