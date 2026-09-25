@@ -115,7 +115,7 @@ int main(){
 
         if (acumulador[0] == '\0'){
             strcpy(acumulador, "cierre_temp0.dat");
-            if (!copiarArchivo(nombreDia, acumulador){
+            if (!copiarArchivo(nombreDia, acumulador)){
                 cout << "Error al copiar " << nombreDia << "." << endl;
                 return 1;
             }
@@ -130,5 +130,26 @@ int main(){
             strcpy(acumulador, nuevo);
         }
     }
+    char nombreSemana[50];
+    snprintf(nombreSemana, sizeof(nombreSemana), "comandas_semana_s%d-%02d.dat", numeroSemana, mes);
+    // Nombre del archivo semanal definitivo que se va a entregar a Alberto.
+
+    // En caso de que ningun dia de la semana tenga planilla. Se genera un archivo semanal vacio para que en resumen.cpp se pueda abrir igual.
+    if (acumulador[0] == '\0') {
+        FILE* vacio = fopen(nombreSemana, "wb");
+        if (vacio == NULL) { cout << "No se pudo crear el archivo semanal." << endl; return 1; }
+        fclose(vacio);
+        cout << "No habia planillas diarias. Se genero " << nombreSemana << " vacio." << endl;
+        return 0;
+    }
+
+    // El acumulador final pasa a ser el archivo semanal definitivo.
+    if (!copiarArchivo(acumulador, nombreSemana)) {
+        cout << "No se pudo generar " << nombreSemana << "." << endl;
+        return 1;
+    }
+    remove(acumulador); // Eliminamos el último temporal.
+
+    cout << "Cierre realizado. Archivo generado: " << nombreSemana << endl;
     return 0;
 }
