@@ -15,17 +15,12 @@ void corteControl(const char* nombreArchivo) {
     FILE* f = fopen(nombreArchivo, "rb");
     if(f == NULL) { // Se activa cuando el usuario ejecuta resumen.cpp sin haber ejecutado cierre.cpp primero
         cout << "Error al intentar leer el archivo." << endl;
-        cout << "Asegurese de haber ejecutado cierre.cpp primero." << endl;
         return;
     }
 
     Comanda c;
     int leido = fread(&c, sizeof(Comanda), 1, f);
     int totalProductosBuffet = 0; // Para contar la cantidad de productos vendidos por el buffet en la semana 
-
-    cout << "............................................." << endl;
-    cout << "               RESUMEN SEMANAL               " << endl; // La pongo acá para que no se repita por cada mozo registrado
-    cout << "............................................." << endl;
 
     while(leido == 1) {
         int mozoActual = c.idMozo; // ID del mozo actual
@@ -54,11 +49,44 @@ void corteControl(const char* nombreArchivo) {
     fclose(f);
 }
 
-// Como se van generando un comandas_semana_sX-mm.dat por cada semana, se le pide al usuario que ingrese el nombre del archivo semanal que desee ver en pantalla
+// Como se van generando un "comandas_semana_sX-mm.dat" por cada semana, se le pide al usuario que ingrese el numero de semana y mes del archivo semanal que desee ver en pantalla
 int main() {
+    int semana, mes;
     char nombreArchivo[30];
-    cout << "Ingrese el nombre del archivo semanal (ej: comandas_semana_s1-06.dat): ";
-    cin >> nombreArchivo;
-    corteControl(nombreArchivo);
+
+    cout << "RESUMEN SEMANAL" << endl;
+    cout << "Ingrese el numero de la semana (del 1 al 5): " << endl;
+    cin >> semana;
+    cout << "Ingrese el numero del mes (del 1 al 12): " << endl;
+    cin >> mes;
+
+    // Para armar el nombre del archivo semanal "comandas_semana_sX-mm.dat" donde X es la semana y mm es el mes
+    sprintf(nombreArchivo, "comandas_semana_s%d-%02d.dat", semana, mes);
+
+    FILE* f = fopen(nombreArchivo, "rb");
+    
+    // En caso de que el usuario ingrese un archivo que no existe, se le pedira que ingrese nuevamente los datos hasta que se encuentre el archivo
+    while(f == NULL) {
+        cout << "No se encontro el archivo " << nombreArchivo << endl;
+        cout << "Verifique los datos ingresados e intente nuevamente." << endl;
+        cout << "Si el problema persiste, asegurese de haber ejecutado cierre.cpp primero." << endl;
+
+        cout << "Ingrese el numero de semana nuevamente(del 1 al 5): " << endl;
+        cin >> semana;
+        cout << "Ingrese el numero del mes nuevamente(del 1 al 12): " << endl;
+        cin >> mes;
+
+        // Cambia el primer nombre ingresado por el nuevo
+        sprintf(nombreArchivo, "comandas_semana_s%d-%02d.dat", semana, mes);
+        f = fopen(nombreArchivo, "rb");
+    }
+
+    fclose(f);
+
+    cout << "............................................." << endl;
+    cout << "          RESUMEN SEMANA " << semana << " - MES " << mes << endl;
+    cout << "............................................." << endl;
+
+    corteControl(nombreArchivo); // Si el archivo existe, llama a la funcion 
     return 0;
 }
