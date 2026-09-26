@@ -1,7 +1,7 @@
 # TP-Integrador-Buffet-Albert-Einstein
 Trabajo Práctico grupal de Algoritmos y Estructuras de Datos (UTN FRBA) — unidad de archivos binarios en C/C++.
 Integrantes del grupo:
-1. Katherine Valeria Moreno Miranda -> mail: kmorenomiranda@frba.utn.edu.ar
+1. Katherine Valeria Moreno Miranda -> mail: kmorenomiranda@frba.utn.edu.ar --> github: kmorenomiranda
 2. Ayelen Romina Alcon Huayta -> mail: aalconhuayta@frba.utn.edu.ar 
 3. Melina Salomé Cejas Guillen -> mail: Salomecejas.educacion@gmail.com
 4. Pérez Griselda Soledad -> mail: griperez@frba.utn.edu.ar --> github: griperez-sgp
@@ -67,3 +67,36 @@ comandas_05-06-2025.dat
 comandas_06-06-2025.dat
 comandas_07-06-2025.dat
 ```
+-------------------------------------------------
+## cierre.cpp
+**responsable:** Katherine Moreno
+
+**Descripcion:** Programa que une las planillas diarias de comandas (`comandas_DD-MM-AAAA.dat`) de una semana en una única planilla semanal (`comandas_semana_sX-mm.dat`), ordenada por `idMozo`.
+
+## Cómo correr
+
+El programa va a pedir, en este orden:
+
+1. **Número de semana** (ej. `1`).
+2. **Mes** (Escrito en formato numerico).
+3. **Cantidad de días** que tiene la semana a cerrar.
+4. **Fecha de cada día de la semana a cerrar**, en formato `DD-MM-AAAA` (una por vez, tantas veces como días se indicó en el paso anterior).
+
+Los archivos `comandas_DD-MM-AAAA.dat` correspondientes a esas fechas tienen que existir en el mismo directorio (los genera `ventas.cpp`). Si algún día no tiene planilla, el programa avisa y continúa sin cortarse.
+
+**Resultado:** genera `comandas_semana_sX-mm.dat` con todos los registros de la semana, ordenados por `idMozo`.
+
+## Cómo se resolvió
+
+Las planillas diarias ya llegan ordenadas por `idMozo` (esta parte se realiza en `ventas.cpp`). Por lo que, utilice el algoritmo de **apareo (intercalación)**: *Procesa dos archivos ordenados por la misma clave en paralelo y los combina. En cada paso se procesa la clave menor y se avanza ese
+archivo; cuando uno se agota, se vuelca el resto del otro.*
+
+El patrón de apareo combina *dos* archivos, pero la semana a cerrar puede tener más de dos días. La solución es un **acumulador**: el primer día encontrado se copia directamente (no hay nada previo con qué compararlo); cada día siguiente se aparea con el acumulador actual, y el resultado pasa a ser el nuevo acumulador.
+
+Los archivos temporales intermedios (`cierre_temp0.dat`, `cierre_temp1.dat`, ...) se borran con `remove()` apenas dejan de ser necesarios.
+
+### Casos contemplados
+
+- **Día sin planilla:** se detecta con `fopen` en modo `"rb"` devolviendo `NULL`; el programa avisa y sigue con el próximo día.
+- **Ninguna planilla en toda la semana:** se genera un `comandas_semana_sX-mm.dat` vacío, para que `resumen.cpp` lo pueda abrir.
+- **Cualquier posible error de apertura**: se corta el programa sin que se rompa.
