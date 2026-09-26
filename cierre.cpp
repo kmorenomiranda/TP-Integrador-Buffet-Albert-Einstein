@@ -65,7 +65,8 @@ bool aparear(const char nomA[], const char nomB[], const char nomC[]) {
     if (comandaA.idMozo <= comandaB.idMozo) {
       fwrite(&comandaA, sizeof(Comanda), 1, archivoC);
       leidoA = (int)fread(&comandaA, sizeof(Comanda), 1, archivoA);
-    } else {
+    }
+    else {
           fwrite(&comandaB, sizeof(Comanda), 1, archivoC);
           leidoB = (int)fread(&comandaB, sizeof(Comanda), 1, archivoB);
         }
@@ -88,9 +89,9 @@ bool aparear(const char nomA[], const char nomB[], const char nomC[]) {
 int main(){
     //  Primero los datos que identifican la semana a cerrar para armar el nombre del archivo semanal final (comandas_semana_sX-mm.dat).
     int numeroSemana, mes, cantidadDias;
-    cout << "Numero de semana (X): ";
+    cout << "Numero de semana a cerrar (X): ";
     cin >> numeroSemana;
-    cout << "Mes (numero, ej. 6 para junio): ";
+    cout << "Mes (numerico, ej. 6 para junio): ";
     cin >> mes;
     cout << "Cuantos dias tiene la semana a cerrar: ";
     cin >> cantidadDias;
@@ -113,13 +114,16 @@ int main(){
         }
         fclose(f);
 
-        if (acumulador[0] == '\0'){
+        //Si copiarArchivo devuelve false (ej, no se pudo abrir el archivo de destino en wb)
+        //se corta el programa ahí mismo con return 1.
+        if (acumulador[0] == '\0'){ 
             strcpy(acumulador, "cierre_temp0.dat");
             if (!copiarArchivo(nombreDia, acumulador)){
                 cout << "Error al copiar " << nombreDia << "." << endl;
                 return 1;
             }
-        } else {
+        }
+        else {
             char nuevo[50];
             snprintf(nuevo, sizeof(nuevo), "cierre_temp%d.dat", ++temporal);
             if (!aparear(acumulador, nombreDia, nuevo)) {
