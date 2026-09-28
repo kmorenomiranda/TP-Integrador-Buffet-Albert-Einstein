@@ -65,7 +65,8 @@ bool aparear(const char nomA[], const char nomB[], const char nomC[]) {
     if (comandaA.idMozo <= comandaB.idMozo) {
       fwrite(&comandaA, sizeof(Comanda), 1, archivoC);
       leidoA = (int)fread(&comandaA, sizeof(Comanda), 1, archivoA);
-    } else {
+    }
+    else {
           fwrite(&comandaB, sizeof(Comanda), 1, archivoC);
           leidoB = (int)fread(&comandaB, sizeof(Comanda), 1, archivoB);
         }
@@ -88,9 +89,9 @@ bool aparear(const char nomA[], const char nomB[], const char nomC[]) {
 int main(){
     //  Primero los datos que identifican la semana a cerrar para armar el nombre del archivo semanal final (comandas_semana_sX-mm.dat).
     int numeroSemana, mes, cantidadDias;
-    cout << "Numero de semana (X): ";
+    cout << "Numero de semana a cerrar (X): ";
     cin >> numeroSemana;
-    cout << "Mes (numero, ej. 6 para junio): ";
+    cout << "Mes (numerico, ej. 6 para junio): ";
     cin >> mes;
     cout << "Cuantos dias tiene la semana a cerrar: ";
     cin >> cantidadDias;
@@ -113,13 +114,16 @@ int main(){
         }
         fclose(f);
 
-        if (acumulador[0] == '\0'){
+        //Si copiarArchivo devuelve false (ej, no se pudo abrir el archivo de destino en wb)
+        //se corta el programa ahí mismo con return 1.
+        if (acumulador[0] == '\0'){ 
             strcpy(acumulador, "cierre_temp0.dat");
-            if (!copiarArchivo(nombreDia, acumulador){
+            if (!copiarArchivo(nombreDia, acumulador)){
                 cout << "Error al copiar " << nombreDia << "." << endl;
                 return 1;
             }
-        } else {
+        }
+        else {
             char nuevo[50];
             snprintf(nuevo, sizeof(nuevo), "cierre_temp%d.dat", ++temporal);
             if (!aparear(acumulador, nombreDia, nuevo)) {
@@ -130,5 +134,26 @@ int main(){
             strcpy(acumulador, nuevo);
         }
     }
+    char nombreSemana[50];
+    snprintf(nombreSemana, sizeof(nombreSemana), "comandas_semana_s%d-%02d.dat", numeroSemana, mes);
+    // Nombre del archivo semanal definitivo que se va a entregar a Alberto.
+
+    // En caso de que ningun dia de la semana tenga planilla. Se genera un archivo semanal vacio para que en resumen.cpp se pueda abrir igual.
+    if (acumulador[0] == '\0') {
+        FILE* vacio = fopen(nombreSemana, "wb");
+        if (vacio == NULL) { cout << "No se pudo crear el archivo semanal." << endl; return 1; }
+        fclose(vacio);
+        cout << "No habia planillas diarias. Se genero " << nombreSemana << " vacio." << endl;
+        return 0;
+    }
+
+    // El acumulador final pasa a ser el archivo semanal definitivo.
+    if (!copiarArchivo(acumulador, nombreSemana)) {
+        cout << "No se pudo generar " << nombreSemana << "." << endl;
+        return 1;
+    }
+    remove(acumulador); // Eliminamos el último temporal.
+
+    cout << "Cierre realizado. Archivo generado: " << nombreSemana << endl;
     return 0;
 }
