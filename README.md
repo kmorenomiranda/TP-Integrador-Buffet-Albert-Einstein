@@ -3,7 +3,7 @@ Trabajo Práctico grupal de Algoritmos y Estructuras de Datos (UTN FRBA) — uni
 Integrantes del grupo:
 1. Katherine Valeria Moreno Miranda -> mail: kmorenomiranda@frba.utn.edu.ar --> github: kmorenomiranda
 2. Ayelen Romina Alcon Huayta -> mail: aalconhuayta@frba.utn.edu.ar 
-3. Melina Salomé Cejas Guillen -> mail: Salomecejas.educacion@gmail.com
+3. Melina Salomé Cejas Guillen -> mail: Salomecejas.educacion@gmail.com --> github: cejassalo
 4. Pérez Griselda Soledad -> mail: griperez@frba.utn.edu.ar --> github: griperez-sgp
 5. Karen Jazmin Marca Villalobos -> mail: kmarcavillalobos@frba.utn.edu.ar
 
