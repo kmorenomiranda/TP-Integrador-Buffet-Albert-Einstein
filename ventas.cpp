@@ -34,7 +34,7 @@ const int   K               = 5;    // igual que K de normalizacion.cpp
 const int   MAX_VENTAS_DIA  = 500;  
 
 void encriptar (char clave [], int k) {
-    for (int i = 0; clave[i] != '/0'; i++) {
+    for (int i = 0; clave[i] != '\0'; i++) {
         clave[i] = clave[i] + k;
     }
 }
@@ -71,6 +71,42 @@ bool loginMozo(const char* archivoMozos, int idMozo, const char* claveTipeada, M
 }
 
 
+long buscarProducto(const char* archivoInventario, int codigo, Producto& p) {
+	FILE* f = fopen(archivoInventario, "rb");
+	if (f == NULL) {
+		return -1;
+	}
+	fseek(f, 0, SEEK_END);
+	long n = ftell(f) / sizeof(Producto); // cant. de registros
+	
+	long primero = 0, ultimo = n-1, pos = -1;
+	while (primero <= ultimo && pos == -1){
+		long medio = (primero + ultimo) / 2;
+		fseek(f, medio * sizeof(Producto), SEEK_SET);
+		fread(&p, sizeof(Producto), 1, f);
+		if (p.codigo == codigo) {
+			pos = medio;
+		} else if (codigo > p.codigo){
+			primero = medio + 1;
+		} else {
+			ultimo = medio - 1;
+		}
+	}
+	
+	fclose(f);
+	return pos;
+	
+	}
+		
+	void mostrarVentas(Comanda ventas[], int len) {              // solo para ver si anda o no
+		for (int i = 0; i < len; i++) { 
+			cout << "Mozo: " << ventas[i].idMozo;
+			cout << "Producto: " << ventas[i].codigoProducto;
+			cout << "Cantidad: " << ventas[i].cantidad;
+			cout << "Comision: " << ventas[i].comision << endl;
+        	}
+	}
+
 int main() {
     const char* archivoMozos      = "mozos.dat";
     const char* archivoInventario = "inventario.dat";
@@ -82,7 +118,11 @@ int main() {
 
     char nombreArchivoDia[30];
     sprintf(nombreArchivoDia, "comandas_%s.dat", fecha);
-
+    
+    Comanda ventas[MAX_VENTAS_DIA]; 
+    int len = 0;                      // arranca vacio
+    
+    
     int idMozo;
     cout << "Ingrese numero de mozo (0 para terminar): ";
     cin >> idMozo;
@@ -93,14 +133,41 @@ int main() {
         cin >> clave;
 
         if (loginMozo(archivoMozos, idMozo,clave,mozo)) {
-            cout << "Bienvenido/a, " << mozo.nombre << "\n" << endl;
+            cout << "Bienvenido/a, " << mozo.nombre << " ! \n" << endl;
+            
+            int codigoProducto, cantidad;
+            cout << "Codigo de producto: ";
+            cin >> codigoProducto;
+            cout << "Cantidad: ";
+            cin >> cantidad;
+ 
+            Producto prod;
+            long pos = buscarProducto(archivoInventario, codigoProducto, prod);
+            if (pos == -1) {
+                cout << "Ese producto no existe.\n" << endl;
+            } else if (prod.stockActual < cantidad) {
+                cout << "No hay stock suficiente (quedan " << prod.stockActual << ") \n" << endl;
+            } else {
+                Comanda c;
+                c.idMozo         = idMozo;
+                c.codigoProducto = codigoProducto;
+                c.cantidad       = cantidad;
+                c.comision       = prod.precio * cantidad * TASA_COMISION;
+ 
+                ventas[len] = c;   // agrego al final del array
+                len++;             // y aumento el tamaño logico
+ 
+                cout << "Venta cargada. Comision: " << c.comision << "\n" << endl;
+            }
+            
             } else {
                 cout << " \nIntente nuevamente \n" << endl;
             }
             cout << "Ingrese el numero del mozo (0 para terminar): ";
             cin >> idMozo;
     }
-    
+    cout << "\nVentas cargadas en esta sesion (" << len << "):" << endl;
+    mostrarVentas(ventas, len);
     // El nombre se armo bien
     cout << "\nArchivo del dia que vamos a usar: " << nombreArchivoDia << endl;
 
