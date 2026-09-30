@@ -98,12 +98,25 @@ long buscarProducto(const char* archivoInventario, int codigo, Producto& p) {
 	
 	}
 		
+void descontarStock(const char* archivoInventario, long pos, int cantidad) {
+    FILE* f = fopen(archivoInventario, "rb+");
+    if (f == NULL) return;
+    Producto p;
+    fseek(f, pos * sizeof(Producto), SEEK_SET);
+    fread(&p, sizeof(Producto), 1, f);          
+    p.stockActual -= cantidad;
+    fseek(f, pos * sizeof(Producto), SEEK_SET); 
+    fwrite(&p, sizeof(Producto), 1, f);
+    fclose(f);
+}
+
+
 	void mostrarVentas(Comanda ventas[], int len) {              // solo para ver si anda o no
 		for (int i = 0; i < len; i++) { 
-			cout << "Mozo: " << ventas[i].idMozo;
-			cout << "Producto: " << ventas[i].codigoProducto;
-			cout << "Cantidad: " << ventas[i].cantidad;
-			cout << "Comision: " << ventas[i].comision << endl;
+			cout << " Mozo: " << ventas[i].idMozo;
+			cout << " Producto: " << ventas[i].codigoProducto;
+			cout << " Cantidad: " << ventas[i].cantidad;
+			cout << " Comision: " << ventas[i].comision << endl;
         	}
 	}
 
@@ -155,7 +168,8 @@ int main() {
                 c.comision       = prod.precio * cantidad * TASA_COMISION;
  
                 ventas[len] = c;   // agrego al final del array
-                len++;             // y aumento el tamaño logico
+                len++;             // y aumento el tamaño
+                descontarStock(archivoInventario, pos, cantidad); 
  
                 cout << "Venta cargada. Comision: " << c.comision << "\n" << endl;
             }
@@ -172,4 +186,5 @@ int main() {
     cout << "\nArchivo del dia que vamos a usar: " << nombreArchivoDia << endl;
 
     return 0;
+    
 }
