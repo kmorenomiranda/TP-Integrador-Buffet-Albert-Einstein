@@ -100,6 +100,7 @@ Los archivos temporales intermedios (`cierre_temp0.dat`, `cierre_temp1.dat`, ...
 - **Día sin planilla:** se detecta con `fopen` en modo `"rb"` devolviendo `NULL`; el programa avisa y sigue con el próximo día.
 - **Ninguna planilla en toda la semana:** se genera un `comandas_semana_sX-mm.dat` vacío, para que `resumen.cpp` lo pueda abrir.
 - **Cualquier posible error de apertura**: se corta el programa sin que se rompa.
+  
 -------------------------------------------------
 ## ventas.cpp
 **Responsable:** Karen Marca Villalobos
@@ -113,9 +114,11 @@ El programa corre de la siguiente manera:
 **1. Fecha del día -->** Ingresar la fecha correspondiente, en formato 'DD-MM-AAAA', una sola vez al principio 
 
 **2. Por cada venta -->** 
-     **-** Numero de mozo y para terminar la carga 0 
-     **-** Clave del mozo 
-     **-** Si el login es válido: pedirá el código del producto y la cantidad vendida.
+    **-** Numero de mozo y para terminar la carga 0 
+    
+    **-** Clave del mozo 
+    
+    **-** Si el login es válido: pedirá el código del producto y la cantidad vendida.
      
 **-** Si la planilla del día ya existía, es decir, si el programa se corre mas de una vez en la misma jornada, el programa la carga primero y agrega las ventas nuevas sin perder las anteriores.
 
