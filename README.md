@@ -109,12 +109,16 @@ Los archivos temporales intermedios (`cierre_temp0.dat`, `cierre_temp1.dat`, ...
 ## Cómo correr
 Necesita los mismos archivos que genera normalizacion.cpp: "mozos.dat" y "inventario.dat"
 El programa corre de la siguiente manera:
+
 **1. Fecha del día -->** Ingresar la fecha correspondiente, en formato 'DD-MM-AAAA', una sola vez al principio 
+
 **2. Por cada venta -->** 
      **-** Numero de mozo y para terminar la carga 0 
      **-** Clave del mozo 
      **-** Si el login es válido: pedirá el código del producto y la cantidad vendida.
+     
 **-** Si la planilla del día ya existía, es decir, si el programa se corre mas de una vez en la misma jornada, el programa la carga primero y agrega las ventas nuevas sin perder las anteriores.
+
 **- Resultado:** se creará o actualizará "comandas_DD-MM-AAAA.dat" con todas las ventas ordenadas por el ID del mozo y descontará el stock ventido en "inventario.dat".
 
 **Ejemplo de uso**
