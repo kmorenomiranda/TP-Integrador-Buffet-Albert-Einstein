@@ -102,30 +102,34 @@ Los archivos temporales intermedios (`cierre_temp0.dat`, `cierre_temp1.dat`, ...
 - **Cualquier posible error de apertura**: se corta el programa sin que se rompa.
   
 -------------------------------------------------
-## ventas.cpp
+### ventas.cpp
 **Responsable:** Karen Marca Villalobos
 
 **Descripción:** Programa que realiza la carga de las ventas del día. Valida a los mozos con su clave encriptada, registra cada venta con su comisión, descuenta el stock vendido del inventario y deja la planilla del día ordenadas por el numero del mozo.
 
 ## Cómo correr
 Necesita los mismos archivos que genera normalizacion.cpp: "mozos.dat" y "inventario.dat"
+
 El programa corre de la siguiente manera:
 
 **1. Fecha del día -->** Ingresar la fecha correspondiente, en formato 'DD-MM-AAAA', una sola vez al principio 
 
-**2. Por cada venta -->** 
+**2. Por cada venta:** 
+
         - Numero de mozo y para terminar la carga 0 
     
         - Clave del mozo 
     
         - Si el login es válido: pedirá el código del producto y la cantidad vendida.
      
-**-** Si la planilla del día ya existía, es decir, si el programa se corre mas de una vez en la misma jornada, el programa la carga primero y agrega las ventas nuevas sin perder las anteriores.
+**-->** Si la planilla del día ya existía, es decir, si el programa se corre mas de una vez en la misma jornada, el programa la carga primero y agrega las ventas nuevas sin perder las anteriores.
 
 **- Resultado:** se creará o actualizará "comandas_DD-MM-AAAA.dat" con todas las ventas ordenadas por el ID del mozo y descontará el stock ventido en "inventario.dat".
 
-**Ejemplo de uso**
+*Ejemplo de uso*
+
 === Carga de ventas del dia ===
+
 Fecha (DD-MM-AAAA): 01-10-2026
 
 Ingrese numero de mozo (0 para terminar): 1
@@ -139,7 +143,7 @@ Codigo de producto: 101
 
 Cantidad: 2
 
-- Venta cargada - 
+ -Venta cargada- 
 
  Comision: 300
 
