@@ -5,7 +5,7 @@ Integrantes del grupo:
 2. Ayelen Romina Alcon Huayta -> mail: aalconhuayta@frba.utn.edu.ar 
 3. Melina Salomé Cejas Guillen -> mail: Salomecejas.educacion@gmail.com --> github: cejassalo
 4. Pérez Griselda Soledad -> mail: griperez@frba.utn.edu.ar --> github: griperez-sgp
-5. Karen Jazmin Marca Villalobos -> mail: kmarcavillalobos@frba.utn.edu.ar
+5. Karen Jazmin Marca Villalobos -> mail: kmarcavillalobos@frba.utn.edu.ar --> gitHub: Kmarca-vil
 
 ### Planillas por día y actualización de stock
 **Responsable:** Pérez Griselda Soledad
@@ -100,3 +100,52 @@ Los archivos temporales intermedios (`cierre_temp0.dat`, `cierre_temp1.dat`, ...
 - **Día sin planilla:** se detecta con `fopen` en modo `"rb"` devolviendo `NULL`; el programa avisa y sigue con el próximo día.
 - **Ninguna planilla en toda la semana:** se genera un `comandas_semana_sX-mm.dat` vacío, para que `resumen.cpp` lo pueda abrir.
 - **Cualquier posible error de apertura**: se corta el programa sin que se rompa.
+-------------------------------------------------
+## ventas.cpp
+**Responsable:** Karen Marca Villalobos
+
+**Descripción:** Programa que realiza la carga de las ventas del día. Valida a los mozos con su clave encriptada, registra cada venta con su comisión, descuenta el stock vendido del inventario y deja la planilla del día ordenadas por el numero del mozo.
+
+## Cómo correr
+Necesita los mismos archivos que genera normalizacion.cpp: "mozos.dat" y "inventario.dat"
+El programa corre de la siguiente manera:
+**1. Fecha del día -->** Ingresar la fecha correspondiente, en formato 'DD-MM-AAAA', una sola vez al principio 
+**2. Por cada venta -->** 
+     **-** Numero de mozo y para terminar la carga 0 
+     **-** Clave del mozo 
+     **-** Si el login es válido: pedirá el código del producto y la cantidad vendida.
+**-** Si la planilla del día ya existía, es decir, si el programa se corre mas de una vez en la misma jornada, el programa la carga primero y agrega las ventas nuevas sin perder las anteriores.
+**- Resultado:** se creará o actualizará "comandas_DD-MM-AAAA.dat" con todas las ventas ordenadas por el ID del mozo y descontará el stock ventido en "inventario.dat".
+
+**Ejemplo de uso**
+=== Carga de ventas del dia ===
+Fecha (DD-MM-AAAA): 01-10-2026
+Ingrese numero de mozo (0 para terminar): 1
+Clave: 1
+Bienvenido/a, Ana Lopez ! 
+
+Codigo de producto: 101
+Cantidad: 2
+- Venta cargada - 
+ Comision: 300
+
+Ingrese el numero del mozo (0 para terminar): 0
+
+Planilla del dia 01-10-2026 grabada con 1 ventas en total 
+
+## Cómo se resolvió
+- **Login:** la clave que tipea el mozo se encripta con el mismo corrimiento (K = 5) que usa "normalizacion.cpp" y se compara contra la guardada en "mozos.dat". El mozo se busca con **búsqueda secuencial** ('buscarMozo'), ya que "mozos.dat" es chico.
+- **Producto:** "inventario.dat" está ordenado por código pero con huecos, se aplica **búsqueda binaria** ('buscarProducto') sobre el archivo.
+- **Comisión:** 10% del precio del producto por la cantidad vendida ('TASA_COMISION').
+- **Stock:** se descuenta con **edición in situ** ("rb+" , función "descontarStock"): se lee el producto, se resta la cantidad vendida, se retrocede con 'fseek' y se regraba solo ese registro.
+- **Planilla del día:** las ventas se acumulan en un array en memoria (tam.físico 'MAX_VENTAS_DIA', tam.lógico 'len'). Si ya existía una planilla de ese día, "cargarExistente" la carga primero. Al terminar, "ordenarPorMozo" ordena por inserción y "grabarPlanilla" graba el archivo completo.
+
+### Casos contemplados
+- **Mozo inexistente o clave incorrecta:** avisa ("No existe un mozo con ese numero." / "Clave incorrecta.") y vuelve a pedir el número de mozo, sin cortar el programa.
+- **Producto inexistente:** avisa y no registra la venta.
+- **Stock insuficiente:** avisa cuántas unidades quedan y no registra la venta ni descuenta nada.
+- **Planilla del día que todavía no existe:** se crea desde cero.
+- **Planilla del día que ya existía:** se leen las ventas previas y se agregan las nuevas, sin perder lo ya cargado.
+
+
+
