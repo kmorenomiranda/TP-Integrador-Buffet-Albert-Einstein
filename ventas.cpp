@@ -1,7 +1,7 @@
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
-// 1 Parte: structs base y lectura de la fecha
+
 
 #include <iostream>
 #include <cstdio>
@@ -54,7 +54,7 @@ bool buscarMozo(const char* nombreArchivo, int idBuscado, Mozo& m) { //Busq. Sec
 
 bool loginMozo(const char* archivoMozos, int idMozo, const char* claveTipeada, Mozo& mozoOut) {
     if (!buscarMozo(archivoMozos, idMozo, mozoOut)) {
-        cout << "No existe un mozo con ese numero." << endl;
+        cout << "No existe un mozo con ese numero" << endl;
         return false;
     }
 
@@ -63,7 +63,7 @@ bool loginMozo(const char* archivoMozos, int idMozo, const char* claveTipeada, M
     encriptar(claveEncriptada, K);
 
     if (strcmp(claveEncriptada, mozoOut.password) != 0) {
-        cout << "Clave incorrecta." << endl;
+        cout << "Clave incorrecta " << endl;
         return false;
     }
 
@@ -111,14 +111,45 @@ void descontarStock(const char* archivoInventario, long pos, int cantidad) {
 }
 
 
-	void mostrarVentas(Comanda ventas[], int len) {              // solo para ver si anda o no
-		for (int i = 0; i < len; i++) { 
-			cout << " Mozo: " << ventas[i].idMozo;
-			cout << " Producto: " << ventas[i].codigoProducto;
-			cout << " Cantidad: " << ventas[i].cantidad;
-			cout << " Comision: " << ventas[i].comision << endl;
-        	}
+int cargarExistente(const char* nombreArchivoDia, Comanda ventas[], int max) {
+	FILE* f = fopen(nombreArchivoDia, "rb");
+	if (f == NULL) {
+		return 0;
 	}
+	int len = 0;
+	while (len < max && fread(&ventas[len], sizeof (Comanda), 1, f) == 1) {
+		len ++;
+	}
+	fclose(f);
+	return len;
+}
+
+
+void ordenarPorMozo(Comanda ventas[], int len) { //Ord. por inserciòn
+    for (int i = 1; i < len; i++) {
+        Comanda clave = ventas[i];
+        int j = i - 1;
+        while (j >= 0 && ventas[j].idMozo > clave.idMozo) {
+            ventas[j + 1] = ventas[j];
+            j--;
+        }
+        ventas[j + 1] = clave;
+    }
+}
+
+
+void grabarPlanilla(const char* nombreArchivoDia, Comanda ventas[], int len) { // escribo sobre el archivo
+    FILE* f = fopen(nombreArchivoDia, "wb");
+    if (f == NULL) {
+        cout << "No se pudo grabar la planilla." << endl;
+        return;
+    }
+    for (int i = 0; i < len; i++) {
+        fwrite(&ventas[i], sizeof(Comanda), 1, f);
+    }
+    fclose(f);
+}
+
 
 int main() {
     const char* archivoMozos      = "mozos.dat";
@@ -133,7 +164,10 @@ int main() {
     sprintf(nombreArchivoDia, "comandas_%s.dat", fecha);
     
     Comanda ventas[MAX_VENTAS_DIA]; 
-    int len = 0;                      // arranca vacio
+    int len = cargarExistente(nombreArchivoDia, ventas, MAX_VENTAS_DIA);   // arranca con lo que esta adentro o 0
+    if (len > 0) {
+        cout << "La planilla de " << fecha << " ya tenia " << len << " ventas cargadas." << endl;
+    }
     
     
     int idMozo;
@@ -157,7 +191,7 @@ int main() {
             Producto prod;
             long pos = buscarProducto(archivoInventario, codigoProducto, prod);
             if (pos == -1) {
-                cout << "Ese producto no existe.\n" << endl;
+                cout << "Ese producto no existe \n" << endl;
             } else if (prod.stockActual < cantidad) {
                 cout << "No hay stock suficiente (quedan " << prod.stockActual << ") \n" << endl;
             } else {
@@ -169,9 +203,11 @@ int main() {
  
                 ventas[len] = c;   // agrego al final del array
                 len++;             // y aumento el tamaño
+                
                 descontarStock(archivoInventario, pos, cantidad); 
  
-                cout << "Venta cargada. Comision: " << c.comision << "\n" << endl;
+                cout << "- Venta cargada - " << endl;
+				cout << " Comision: " << c.comision << "\n" << endl;
             }
             
             } else {
@@ -180,11 +216,12 @@ int main() {
             cout << "Ingrese el numero del mozo (0 para terminar): ";
             cin >> idMozo;
     }
-    cout << "\nVentas cargadas en esta sesion (" << len << "):" << endl;
-    mostrarVentas(ventas, len);
-    // El nombre se armo bien
-    cout << "\nArchivo del dia que vamos a usar: " << nombreArchivoDia << endl;
-
+    
+    ordenarPorMozo(ventas, len);
+    grabarPlanilla(nombreArchivoDia, ventas, len);
+ 
+    cout << "\nPlanilla del dia " << fecha << " grabada con " << len << " ventas en total " << endl;
+   
     return 0;
     
 }
