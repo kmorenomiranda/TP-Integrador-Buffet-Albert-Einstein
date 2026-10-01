@@ -114,11 +114,11 @@ El programa corre de la siguiente manera:
 **1. Fecha del día -->** Ingresar la fecha correspondiente, en formato 'DD-MM-AAAA', una sola vez al principio 
 
 **2. Por cada venta -->** 
-    **-** Numero de mozo y para terminar la carga 0 
+        - Numero de mozo y para terminar la carga 0 
     
-    **-** Clave del mozo 
+        - Clave del mozo 
     
-    **-** Si el login es válido: pedirá el código del producto y la cantidad vendida.
+        - Si el login es válido: pedirá el código del producto y la cantidad vendida.
      
 **-** Si la planilla del día ya existía, es decir, si el programa se corre mas de una vez en la misma jornada, el programa la carga primero y agrega las ventas nuevas sin perder las anteriores.
 
@@ -127,18 +127,28 @@ El programa corre de la siguiente manera:
 **Ejemplo de uso**
 === Carga de ventas del dia ===
 Fecha (DD-MM-AAAA): 01-10-2026
+
 Ingrese numero de mozo (0 para terminar): 1
+
 Clave: 1
+
 Bienvenido/a, Ana Lopez ! 
 
+
 Codigo de producto: 101
+
 Cantidad: 2
+
 - Venta cargada - 
+
  Comision: 300
+
 
 Ingrese el numero del mozo (0 para terminar): 0
 
+
 Planilla del dia 01-10-2026 grabada con 1 ventas en total 
+
 
 ## Cómo se resolvió
 - **Login:** la clave que tipea el mozo se encripta con el mismo corrimiento (K = 5) que usa "normalizacion.cpp" y se compara contra la guardada en "mozos.dat". El mozo se busca con **búsqueda secuencial** ('buscarMozo'), ya que "mozos.dat" es chico.
