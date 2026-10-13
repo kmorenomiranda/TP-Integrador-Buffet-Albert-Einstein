@@ -1,8 +1,8 @@
-# TP-Integrador-Buffet-Albert-Einstein
+TP-Integrador-Buffet-Albert-Einstein
 Trabajo Práctico grupal de Algoritmos y Estructuras de Datos (UTN FRBA) — unidad de archivos binarios en C/C++.
 Integrantes del grupo:
 1. Katherine Valeria Moreno Miranda -> mail: kmorenomiranda@frba.utn.edu.ar --> github: kmorenomiranda
-2. Ayelen Romina Alcon Huayta -> mail: aalconhuayta@frba.utn.edu.ar 
+2. Ayelen Romina Alcon Huayta -> mail: aalconhuayta@frba.utn.edu.ar --> github: AyelenAlcon
 3. Melina Salomé Cejas Guillen -> mail: Salomecejas.educacion@gmail.com --> github: cejassalo
 4. Pérez Griselda Soledad -> mail: griperez@frba.utn.edu.ar --> github: griperez-sgp
 5. Karen Jazmin Marca Villalobos -> mail: kmarcavillalobos@frba.utn.edu.ar --> gitHub: Kmarca-vil
@@ -67,40 +67,7 @@ comandas_05-06-2025.dat
 comandas_06-06-2025.dat
 comandas_07-06-2025.dat
 ```
--------------------------------------------------
-## cierre.cpp
-**responsable:** Katherine Moreno
 
-**Descripcion:** Programa que une las planillas diarias de comandas (`comandas_DD-MM-AAAA.dat`) de una semana en una única planilla semanal (`comandas_semana_sX-mm.dat`), ordenada por `idMozo`.
-
-## Cómo correr
-
-El programa va a pedir, en este orden:
-
-1. **Número de semana** (ej. `1`).
-2. **Mes** (Escrito en formato numerico).
-3. **Cantidad de días** que tiene la semana a cerrar.
-4. **Fecha de cada día de la semana a cerrar**, en formato `DD-MM-AAAA` (una por vez, tantas veces como días se indicó en el paso anterior).
-
-Los archivos `comandas_DD-MM-AAAA.dat` correspondientes a esas fechas tienen que existir en el mismo directorio (los genera `ventas.cpp`). Si algún día no tiene planilla, el programa avisa y continúa sin cortarse.
-
-**Resultado:** genera `comandas_semana_sX-mm.dat` con todos los registros de la semana, ordenados por `idMozo`.
-
-## Cómo se resolvió
-
-Las planillas diarias ya llegan ordenadas por `idMozo` (esta parte se realiza en `ventas.cpp`). Por lo que, utilice el algoritmo de **apareo (intercalación)**: *Procesa dos archivos ordenados por la misma clave en paralelo y los combina. En cada paso se procesa la clave menor y se avanza ese
-archivo; cuando uno se agota, se vuelca el resto del otro.*
-
-El patrón de apareo combina *dos* archivos, pero la semana a cerrar puede tener más de dos días. La solución es un **acumulador**: el primer día encontrado se copia directamente (no hay nada previo con qué compararlo); cada día siguiente se aparea con el acumulador actual, y el resultado pasa a ser el nuevo acumulador.
-
-Los archivos temporales intermedios (`cierre_temp0.dat`, `cierre_temp1.dat`, ...) se borran con `remove()` apenas dejan de ser necesarios.
-
-### Casos contemplados
-
-- **Día sin planilla:** se detecta con `fopen` en modo `"rb"` devolviendo `NULL`; el programa avisa y sigue con el próximo día.
-- **Ninguna planilla en toda la semana:** se genera un `comandas_semana_sX-mm.dat` vacío, para que `resumen.cpp` lo pueda abrir.
-- **Cualquier posible error de apertura**: se corta el programa sin que se rompa.
-  
 -------------------------------------------------
 ### ventas.cpp
 **Responsable:** Karen Marca Villalobos
@@ -168,5 +135,61 @@ Planilla del dia 01-10-2026 grabada con 1 ventas en total
 - **Planilla del día que todavía no existe:** se crea desde cero.
 - **Planilla del día que ya existía:** se leen las ventas previas y se agregan las nuevas, sin perder lo ya cargado.
 
+-------------------------------------------------
+## cierre.cpp
+**responsable:** Katherine Moreno
 
+**Descripcion:** Programa que une las planillas diarias de comandas (`comandas_DD-MM-AAAA.dat`) de una semana en una única planilla semanal (`comandas_semana_sX-mm.dat`), ordenada por `idMozo`.
+
+## Cómo correr
+
+El programa va a pedir, en este orden:
+
+1. **Número de semana** (ej. `1`).
+2. **Mes** (Escrito en formato numerico).
+3. **Cantidad de días** que tiene la semana a cerrar.
+4. **Fecha de cada día de la semana a cerrar**, en formato `DD-MM-AAAA` (una por vez, tantas veces como días se indicó en el paso anterior).
+
+Los archivos `comandas_DD-MM-AAAA.dat` correspondientes a esas fechas tienen que existir en el mismo directorio (los genera `ventas.cpp`). Si algún día no tiene planilla, el programa avisa y continúa sin cortarse.
+
+**Resultado:** genera `comandas_semana_sX-mm.dat` con todos los registros de la semana, ordenados por `idMozo`.
+
+## Cómo se resolvió
+
+Las planillas diarias ya llegan ordenadas por `idMozo` (esta parte se realiza en `ventas.cpp`). Por lo que, utilice el algoritmo de **apareo (intercalación)**: *Procesa dos archivos ordenados por la misma clave en paralelo y los combina. En cada paso se procesa la clave menor y se avanza ese
+archivo; cuando uno se agota, se vuelca el resto del otro.*
+
+El patrón de apareo combina *dos* archivos, pero la semana a cerrar puede tener más de dos días. La solución es un **acumulador**: el primer día encontrado se copia directamente (no hay nada previo con qué compararlo); cada día siguiente se aparea con el acumulador actual, y el resultado pasa a ser el nuevo acumulador.
+
+Los archivos temporales intermedios (`cierre_temp0.dat`, `cierre_temp1.dat`, ...) se borran con `remove()` apenas dejan de ser necesarios.
+
+### Casos contemplados
+
+- **Día sin planilla:** se detecta con `fopen` en modo `"rb"` devolviendo `NULL`; el programa avisa y sigue con el próximo día.
+- **Ninguna planilla en toda la semana:** se genera un `comandas_semana_sX-mm.dat` vacío, para que `resumen.cpp` lo pueda abrir.
+- **Cualquier posible error de apertura**: se corta el programa sin que se rompa.
+  
+-------------------------------------------------
+## resumen.cpp
+**Responsable:** Ayelen Alcon 
+
+**Descripción:** Programa que genera el resumen del cierre a partir del archivo generado por `cierre.cpp` (`comandas_semana_sX-mm.dat`). Muestra por pantalla la cantidad de productos vendidos y la comisión correspondiente a cada mozo, junto con el total de productos vendidos por el buffet.
+
+### Cómo correr
+Se ejecuta de forma estricta después de `cierre.cpp`. El programa le va a pedir al usuario que ingrese los siguientes datos:
+1. Número de **semana** (del 1 al 5).
+2. Número de **mes** (de 1 al 12).
+
+**- Resultado:** genera un reporte en pantalla con la información detallada de las ventas y comisiones de cada mozo junto con el total del buffet
+
+### Cómo se resolvió
+Para evitar que el usuario tenga que escribir manualmente el nombre completo del archivo (`comandas_semana_sX-mm.dat`), el mismo se construye dinámicamente utilizando `sprintf` con el especificador `%02d` para asegurar que el mes siempre mantenga el formato de dos dígitos (ej. 06 para junio).
+
+Se implementa un bucle `while` para verificar que el archivo exista mediante `fopen` en modo lectura binaria (`"rb"`). Si el archivo semanal no existe (por ejemplo, si no se ejecutó previamente `cierre.cpp` o se ingresaron mal los datos), el programa informa el error y vuelve a solicitar los datos sin interrumpir ni romper la ejecución.
+
+El procesamiento del archivo semanal se realiza aplicando un **corte de control** mediante la clave `idMozo`, lo que permite, por cada mozo, acumular el total de productos vendidos y la comisión, imprimiendo un subtotal al cambiar de mozo e incrementando la cantidad de productos vendidos por el buffet.
+
+### Casos contemplados
+- **Archivo inexistente o datos mal ingresados:** Si ingresa una semana o un mes que no existe, o si no se ejecutó previamente `cierre.cpp`, advierte el error en pantalla y vuelve a pedir los datos.
+- **Archivo semanal vacío:** Si `cierre.cpp` generó un archivo semanal con cero ventas, el corte de control no se ejecuta e imprime directamente en pantalla el total del buffet: 0
 
