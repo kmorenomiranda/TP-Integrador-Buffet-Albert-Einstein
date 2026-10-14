@@ -11,7 +11,7 @@ Integrantes del grupo:
 
 **Responsable:** Melina Salomé Cejas Guillén
 
-*Descripción:* Programa encargado de procesar el archivo histórico de comandas (`comandas_historicas.dat`) para identificar a los mozos únicos, asignarles un número de identificador, calcular su comisión histórica acumulada y generar su contraseña inicial encriptada. Finalmente, exporta el archivo binario `mozos.dat'.
+Programa encargado de procesar el archivo histórico de comandas (`comandas_historicas.dat`) para identificar a los mozos únicos, asignarles un número de identificador, calcular su comisión histórica acumulada y generar su contraseña inicial encriptada. Finalmente, exporta el archivo binario `mozos.dat'.
 
 ## Cómo correr
 1. Debe estar disponible en el directorio el archivo binario de origen `comandas_historicas.dat`.
