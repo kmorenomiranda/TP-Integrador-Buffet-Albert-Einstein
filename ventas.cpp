@@ -10,7 +10,7 @@ using namespace std;
 
 struct Mozo {
     int   idMozo;
-    char  nombre[50 + 1];  // porque en normalizacion.cpp aparece asi, consultar 
+    char  nombre[50]; // igual que en normalizacion.cpp
     char  password[20];    // clave ya ENCRIPTADA (corrimiento +K)
     float totalComision;
 };
@@ -125,7 +125,7 @@ int cargarExistente(const char* nombreArchivoDia, Comanda ventas[], int max) {
 }
 
 
-void ordenarPorMozo(Comanda ventas[], int len) { //Ord. por inserciòn
+void ordenarPorMozo(Comanda ventas[], int len) { //Ord. por inserciÃ²n
     for (int i = 1; i < len; i++) {
         Comanda clave = ventas[i];
         int j = i - 1;
@@ -202,7 +202,7 @@ int main() {
                 c.comision       = prod.precio * cantidad * TASA_COMISION;
  
                 ventas[len] = c;   // agrego al final del array
-                len++;             // y aumento el tamaño
+                len++;             // y aumento el tamaÃ±o
                 
                 descontarStock(archivoInventario, pos, cantidad); 
  
