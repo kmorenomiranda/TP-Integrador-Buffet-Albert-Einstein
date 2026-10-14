@@ -7,6 +7,53 @@ Integrantes del grupo:
 4. Pérez Griselda Soledad -> mail: griperez@frba.utn.edu.ar --> github: griperez-sgp
 5. Karen Jazmin Marca Villalobos -> mail: kmarcavillalobos@frba.utn.edu.ar --> gitHub: Kmarca-vil
 
+## normalizacion.cpp (Carga inicial)
+
+**Responsable:** Melina Salomé Cejas Guillén
+
+*Descripción:* Programa encargado de procesar el archivo histórico de comandas (`comandas_historicas.dat`) para identificar a los mozos únicos, asignarles un número de identificador, calcular su comisión histórica acumulada y generar su contraseña inicial encriptada. Finalmente, exporta el archivo binario `mozos.dat'.
+
+## Cómo correr
+1. Debe estar disponible en el directorio el archivo binario de origen `comandas_historicas.dat`.
+2. Compilar y ejecutar `normalizacion.cpp`.
+3. Al finalizar, el programa imprime por consola el listado de mozos procesados con su respectivo ID, nombre, clave encriptada y comisión total, y genera automáticamente el archivo `mozos.dat`.
+
+*Ejemplo de salida:*
+
+id=1  nombre=Sofia Ramirez  clave=6  comision=1600
+id=2  nombre=Bruno Diaz     clave=7  comision=1870
+id=3  nombre=Carla Lopez    clave=8  comision=1810
+id=4  nombre=Diego Sosa     clave=9  comision=1800
+id=5  nombre=Emma Ruiz      clave=:  comision=1690
+
+
+## Cómo se resolvió
+
+* **Gestión dinámica en memoria:**
+* Se implementó una lista enlazada simple (`NodoMozo`) para almacenar y manipular los mozos a medida que se leen del archivo histórico, ya que no se conoce de antemano la cantidad total de mozos únicos.
+* **Búsqueda e inserción:**
+* Por cada registro leído de `comandas_historicas.dat`, se realiza una búsqueda secuencial por nombre mediante la función `buscarMozo` utilizando `strcmp`.
+
+
+* Si el mozo ya figura en la lista, se acumula su comisión (`mozo->info.totalComision += aux.comision`).
+
+
+* Si el mozo no se encuentra, se crea un nodo nuevo, se le asigna un ID incremental (`proximoId`), se copia su nombre, se inicializa su comisión y se genera su clave llamando a `generarPasswordInicial`, insertándolo finalmente al final de la lista con `insertarFinal`.
+
+
+* **Generación y encriptación de clave (`generarPasswordInicial`):**
+* Se toma el `idMozo` numérico y se convierte a texto extrayendo sus dígitos uno a uno mediante operaciones aritméticas de módulo y división (`% 10` y `/ 10`), invirtiendo el resultado para restaurar el orden correcto de los caracteres.
+* Se aplica un cifrado por desplazamiento sumando una constante fija (`K = 5`) a cada carácter del texto. Esto permite que el módulo de ventas posterior (`ventas.cpp`) valide la contraseña aplicando el corrimiento inverso.
+
+
+* **Persistencia de datos:** Una vez procesado todo el archivo histórico, se recorre la lista enlazada desde el inicio y se graban todas las estructuras en el archivo binario `mozos.dat` usando `fwrite`.
+
+## Casos contemplados
+
+* **Mozos repetidos en el historial:** Se identifican de forma unívoca por su nombre para sumar sus comisiones sin duplicar registros en la estructura ni alterar su identificador asignado.
+* **IDs de múltiples dígitos:** La conversión numérica a cadena de texto invierte correctamente los residuos para garantizar que los números de más de una cifra mantengan su integridad antes de aplicar el cifrado.
+* **Sobreescritura limpia del binario:** El archivo binario de salida se abre en modo binario de escritura (`"wb"`), asegurando que cada ejecución reemplace la versión anterior de forma consistente.
+
 ### Planillas por día y actualización de stock
 **Responsable:** Pérez Griselda Soledad
 
